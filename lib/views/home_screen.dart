@@ -4,7 +4,10 @@ import '../models/treinos_model.dart';
 import '../views/detalhes_rotina_screen.dart';
 import 'package:sa_app_treinos_personalizados/views/nova_rotina_screen.dart';
 
+
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -41,38 +44,51 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadTreinos();
   }
 
-  Future<void> _deleteTreino(int id) async {
-    await _treinoController.excluirTreino(id);
-    _loadTreinos();
-  }
 
   Future<void> _verDetalhes(Treino treino) async {
-    await Navigator.push(
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => DetalhesRotinaScreen(treino: treino),
       ),
     );
-    _loadTreinos();
+    if (result == true) {
+      // Só recarrega se realmente excluiu
+      _loadTreinos();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Minhas Rotinas Personalizadas de Treino")),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _treinos.isEmpty
-              ? Center(child: Text("Nenhuma Rotina Personalizada de Treino encontrada."))
-              : ListView.builder(
+      appBar: AppBar(title: Text("Minhas Rotinas Personalizadas"), backgroundColor:Color.fromARGB(188, 110, 49, 207),),
+    
+      body: 
+      _isLoading
+          ? Center(child: CircularProgressIndicator()) : _treinos.isEmpty ? Center(child: Text("Nenhuma Rotina de Treino encontrada.")) : ListView.builder(
                   itemCount: _treinos.length,
                   itemBuilder: (context, index) {
                     final treino = _treinos[index];
-                    return ListTile(
-                      title: Text(treino.nome),
-                      subtitle: Text(treino.objetivo),
-                      onTap: () => _verDetalhes(treino),
-                      onLongPress: () => _deleteTreino(treino.id!),
+                    return Container(
+                      color: const Color.fromARGB(64, 202, 183, 255),
+                      child: ListTile(
+                        style: ListTileStyle.drawer,
+                        title: Text(treino.nome),
+                        subtitle: Text(treino.objetivo),
+                        onTap: () => _verDetalhes(treino),
+                        trailing: IconButton(
+                          icon: Icon(Icons.fitness_center, color: const Color.fromARGB(255, 11, 0, 112)),
+                          tooltip: 'Ver Exercícios',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => DetalhesRotinaScreen(treino: treino),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     );
                   },
                 ),

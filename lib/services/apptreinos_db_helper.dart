@@ -73,4 +73,9 @@ class ApptreinosDbHelper {
       tipo: e['tipo'] as String,
     )).toList();
   }
+
+  static Future<void> deleteExerciciosByTreinoId(int treinoId) async {
+    final db = await database;
+    await db.delete('exercicios', where: 'treinoId = ?', whereArgs: [treinoId]);
+  }
 }

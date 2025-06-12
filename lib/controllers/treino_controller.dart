@@ -34,5 +34,14 @@ class TreinoController {
     return await ApptreinosDbHelper.getExercicios(treinoId);
   }
 
-  Future<void> excluirTreino(int id) async {}
+  Future<void> excluirTreino(int treinoId) async {
+    final db = await ApptreinosDbHelper.database;
+    await db.delete('treinos', where: 'id = ?', whereArgs: [treinoId]);
+  }
+
+  Future<void> excluirExercicio(int id) async {}
+
+  Future<void> excluirExerciciosDoTreino(int treinoId) async {
+    await ApptreinosDbHelper.deleteExerciciosByTreinoId(treinoId);
+  }
 }
